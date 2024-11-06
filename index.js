@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express()
 
-
 app.use(express.json())
+
+
 let users = [
     {
         nombre:"carlos",
@@ -54,8 +55,6 @@ app.post('/addUser/:nombre', (req, res)=> {
     let nombre = req.params.nombre
     let user = users.find(user=>user.nombre == nombre)
     let newUser = req.body
-    // console.log(user);
-    // res.send(user)
 if (user != undefined) {
     if(user.nombre == nombre){
         res.send("User ya existe")
@@ -64,18 +63,17 @@ if (user != undefined) {
     users.push(newUser)
     res.json(newUser)
 }
+})
 
+app.put('/actualizar/:id', (req, res)=> {
+    let id = req.params.id
+    let user = users.find(user=> user.id == id)
 
-    // for (let i = 0; i < users.length; i++) {
-    //     const element = users[i];
-    //     if(element.nombre === nombre){
-    //         res.send("El usuario ya existe") 
-    //     } else if (element.nombre != nombre) {
-    //         let newUser = req.body
-    //         users.push(newUser)   
-    //         res.json(newUser)
-    //     } 
-    // }
+    user.nombre = req.body.nombre
+    user.apellido = req.body.apellido
+
+    res.json(user)
+
 })
 
 app.listen(3000,()=>{
