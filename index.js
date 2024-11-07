@@ -76,6 +76,14 @@ app.put('/actualizar/:id', (req, res)=> {
 
 })
 
+app.get('/productos/demiapp', (req, res)=> {
+    res.send("todos los productos")
+})
+app.get('/unproducto/:id', (req , res)=> {
+    req.params.id
+    res.send(req.params.id)
+})
+
 app.listen(3000,()=>{
     console.log("Server corriendo en el puerto 3000");
 })
