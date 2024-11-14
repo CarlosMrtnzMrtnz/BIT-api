@@ -1,12 +1,13 @@
 const userModel = require("../models/user.model")
+require('dotenv').config()
 
 exports.getUser = async (req, res)=> {
     try {
         let data = await userModel.find()
-        res.json(data)
+        res.status(200).json(data)
     } catch (error) {
         console.log(error);
-        res.send({error:"Ha ocurrido un error comunicate con el admin"})
+        res.status(500).send({error:"Ha ocurrido un error comunicate con el admin"})
     }
 }
 
@@ -14,11 +15,11 @@ exports.getOneUser = async (req, res)=> {
     try {
         let id = req.params.id
         let user = await userModel.findOne({_id:id})
-        res.json(user)
+        res.status(200).json(user)
         
     } catch (error) {
         console.log(error);
-        res.send({error:"Ha ocurrido un error comunicate con el admin"})
+        res.status(500).send({error:"Ha ocurrido un error comunicate con el admin"})
     }
 }
 
@@ -30,36 +31,42 @@ exports.deleteUser = async (req, res)=> {
             if (user) {
                 let deleteado = await userModel.findOneAndDelete({_id: id})
                 console.log("Usuario eliminado correctamente");
-                res.json(deleteado)
+                res.status(200).json(deleteado)
             } else {
                 console.log("Usuario no encontrado");
-                res.send({msj:"Usuario no encontrado"})
+                res.status(400).send({msj:"Usuario no encontrado"})
             }
         } else {
-            res.send({msj:"Id no contiene los caracteres suficientes"})
+            res.status(400).send({msj:"Id no contiene los caracteres suficientes"})
         }
     } catch (error) {
         console.log(error);
-        res.send({error:"Ha ocurrido un error comunicate con el admin"})
+        res.status(500).send({error:"Ha ocurrido un error comunicate con el admin"})
     }
 }
 
 exports.addUser = async (req, res)=>{
     try {
-        let nombre = req.params.nombre
-        let exist = await userModel.findOne({nombre: nombre})
-        
-        if (!exist) {
-            let user = req.body
-            let newUser = new userModel(user)
-            await newUser.save()
-            res.json(newUser)
+        let regexEmail = /[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}/
+        let email = req.body.email
+
+        if (regexEmail.test(email)) {
+            let exist = await userModel.findOne({email: emai})
+            if (!exist) {
+                let user = req.body
+                let newUser = new userModel(user)
+                await newUser.save()
+                res.status(201).json(newUser)
+            } else {
+                res.status(400).send({msj:"Correo ya existe"})
+            }
         } else {
-            res.send({msj:"Usuario ya existe"})
+            res.status(400).send({error:"Correo Invalido"})
         }
+
     } catch (error) {
         console.log(error);
-        res.send("Ha ocurrido un error comunicate con el admin")        
+        res.status(500).send({error:"Ha ocurrido un error comunicate con el admin"})        
     }
 }
 
@@ -77,18 +84,18 @@ exports.updateUser = async (req, res)=> {
                 user.activo = body.activo
                 // Object.assign(user, body)
                 await userModel.findOneAndUpdate({_id:id},user)
-                res.send("modificado")
+                res.status(200).send("modificado")
             } else {
-                res.send({error:"Usuario no encontrado"})
+                res.status(400).send({error:"Usuario no encontrado"})
             }
         } else {
             console.log("Id proporcionada no es correcta");
-            res.send({error:"Id no contiene los caracteres suficientes"})
+            res.status(400).send({error:"Id no contiene los caracteres suficientes"})
         }
         
     } catch (error) {
         console.log(error);
-        res.send({error:"Ha ocurrido un error comunicate con el admin"})
+        res.status(500).send({error:"Ha ocurrido un error comunicate con el admin"})
     }
 }
 

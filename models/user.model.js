@@ -9,6 +9,10 @@ const userModel = mongoose.Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true
+    },
     edad: {
         type: Number,
         required: true
@@ -17,15 +21,24 @@ const userModel = mongoose.Schema({
         type: Boolean,
         default: true,
         required: true
+    },
+    roll: {
+        type: String,
+        default: "user"
     }
+},
+{
+    versionKey: false
 })
 
 module.exports = mongoose.model('user', userModel)
 
-
-// {
-//     "nombre":"Carlos",
-//     "apellido":"Martinez",
-//     "edad": 18,
-//     "activo": true
-// }
+/*
+{
+     "nombre":"Carlos",
+     "apellido":"Martinez",
+     "edad": 18,
+     "activo": true,
+     "email": "carlos@gmail.com"
+}
+*/
