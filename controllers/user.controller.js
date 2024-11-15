@@ -51,7 +51,7 @@ exports.addUser = async (req, res)=>{
         let email = req.body.email
 
         if (regexEmail.test(email)) {
-            let exist = await userModel.findOne({email: emai})
+            let exist = await userModel.findOne({email: email})
             if (!exist) {
                 let user = req.body
                 let newUser = new userModel(user)
@@ -72,27 +72,30 @@ exports.addUser = async (req, res)=>{
 
 exports.updateUser = async (req, res)=> {
     try {
+        let regexEmail = /[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}/
         let id = await req.params.id
         let body = req.body
-        if (id.length == 24) {
-            let user = await userModel.findById(id)
-            if (user) {
-
-                user.nombre = body.nombre
-                user.apellido = body.apellido
-                user.edad = body.edad
-                user.activo = body.activo
-                // Object.assign(user, body)
-                await userModel.findOneAndUpdate({_id:id},user)
-                res.status(200).send("modificado")
+        if (regexEmail.test(body.email)) {
+            if (id.length == 24) {
+                let user = await userModel.findById(id)
+                if (user) {
+                    // user.nombre = body.nombre
+                    // user.apellido = body.apellido
+                    // user.edad = body.edad
+                    // user.activo = body.activo
+                    Object.assign(user, body)
+                    await userModel.findOneAndUpdate({_id:id},user)
+                    res.status(200).send("modificado")
+                } else {
+                    res.status(400).send({error:"Usuario no encontrado"})
+                }
             } else {
-                res.status(400).send({error:"Usuario no encontrado"})
+                console.log("Id proporcionada no es correcta");
+                res.status(400).send({error:"Id no contiene los caracteres suficientes"})
             }
         } else {
-            console.log("Id proporcionada no es correcta");
-            res.status(400).send({error:"Id no contiene los caracteres suficientes"})
+            res.status(400).send({error: "Correo Invalido"})
         }
-        
     } catch (error) {
         console.log(error);
         res.status(500).send({error:"Ha ocurrido un error comunicate con el admin"})

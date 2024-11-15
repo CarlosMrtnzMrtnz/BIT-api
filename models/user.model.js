@@ -25,6 +25,14 @@ const userModel = mongoose.Schema({
     roll: {
         type: String,
         default: "user"
+    },
+    imagen: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
     }
 },
 {

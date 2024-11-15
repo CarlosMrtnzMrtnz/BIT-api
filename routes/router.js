@@ -1,5 +1,6 @@
 const express = require('express')
 const userController = require('../controllers/user.controller')
+const loginController = require('../controllers/login.controller')
 const router = express.Router()
 
 // ----------------------------- rutas User ----------------------------
@@ -11,5 +12,6 @@ router.put('/actualizar/:id', userController.updateUser)
 
 // ---------------------------rutas products ---------------------------
 
+router.post('/validacion', loginController.login)
 
 module.exports = router
