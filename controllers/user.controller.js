@@ -4,7 +4,7 @@ require('dotenv').config()
 exports.getUser = async (req, res)=> {
     try {
         let data = await userModel.find()
-        res.status(200).json(data)
+        res.status(200).json(req.usuario)
     } catch (error) {
         console.log(error);
         res.status(500).send({error:"Ha ocurrido un error comunicate con el admin"})
@@ -25,20 +25,25 @@ exports.getOneUser = async (req, res)=> {
 
 exports.deleteUser = async (req, res)=> {
     try {
-        let id = req.params.id
-        if (id.length == 24) {   
-            let user = await userModel.findById(req.params.id)
-            if (user) {
-                let deleteado = await userModel.findOneAndDelete({_id: id})
-                console.log("Usuario eliminado correctamente");
-                res.status(200).json(deleteado)
+        // if (req.usuario.roll == "admin") {
+            
+            let id = req.params.id
+            if (id.length == 24) {   
+                let user = await userModel.findById(req.params.id)
+                if (user) {
+                    let deleteado = await userModel.findOneAndDelete({_id: id})
+                    console.log("Usuario eliminado correctamente");
+                    res.status(200).json(deleteado)
+                } else {
+                    console.log("Usuario no encontrado");
+                    res.status(400).send({msj:"Usuario no encontrado"})
+                }
             } else {
-                console.log("Usuario no encontrado");
-                res.status(400).send({msj:"Usuario no encontrado"})
+                res.status(400).send({msj:"Id no contiene los caracteres suficientes"})
             }
-        } else {
-            res.status(400).send({msj:"Id no contiene los caracteres suficientes"})
-        }
+        // } else {
+        //     res.status(400).send({error:"No tienes permitido eliminar estos recursos"})
+        // }
     } catch (error) {
         console.log(error);
         res.status(500).send({error:"Ha ocurrido un error comunicate con el admin"})
